@@ -1,0 +1,18 @@
+#pragma once
+
+#include <memory>
+#include <string>
+#include "iparser.hpp"
+#include "pattern.hpp"
+
+namespace par
+{
+enum class InterpretType
+{
+    XML,
+    JSON
+};
+
+class Pattern;
+std::unique_ptr<IParser> create_parser(Pattern *p, InterpretType type);
+}
