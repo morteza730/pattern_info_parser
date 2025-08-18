@@ -7,19 +7,19 @@ add_library(${LIBRARY_TARGET_NAME} SHARED
     ${CMAKE_CURRENT_LIST_DIR}/include/iParser.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/iStructInfo.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/nestedData.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/include/requestInfo.hpp
+    # ${CMAKE_CURRENT_LIST_DIR}/include/requestInfo.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/structInfo.hpp
 )
 
 target_sources(${LIBRARY_TARGET_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/include/parser.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/simpleJSONUnpack.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/include/simpleXMLUnpack.hpp
+    #${CMAKE_CURRENT_LIST_DIR}/include/simpleXMLUnpack.hpp
 )
 
 target_sources(${LIBRARY_TARGET_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/src/parserFactory.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/src/simpleXMLUnpack.cpp
+    #${CMAKE_CURRENT_LIST_DIR}/src/simpleXMLUnpack.cpp
     ${CMAKE_CURRENT_LIST_DIR}/src/simpleJSONUnpack.cpp
 )
 

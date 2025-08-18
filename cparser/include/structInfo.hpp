@@ -3,6 +3,8 @@
 #include "iStructInfo.hpp"
 #include <unordered_map>
 #include <string>
+#include <functional>
+#include <iostream>
 
 namespace par
 {
@@ -12,26 +14,42 @@ struct StructInfo: public IStructInfo
 {
     StructInfo(const std::string &path, std::unordered_map<TAttribute, std::string> attributeNames): path{path}, attributeNames{attributeNames}{}
 
-    void fill(const NestedDictionary &data) override
+    // TODO: fill function violate single responsibility and open close principles.
+    void fill(const NestedData &data) override
     {
         for (auto it = attributeNames.cbegin(); it != attributeNames.cend(); ++it)
         {
             const std::string &targetKey = it->second;
             std::string result;
 
-            std::function<bool(const NestedDictionary &)> recurse =
-                [&](const NestedDictionary &node) -> bool
+            std::function<bool(const NestedData &)> recurse =
+                [&](const NestedData &node) -> bool
             {
-                if (node.children.contains(targetKey) && !node.children[targetKey].value.empty() && node.children[targetKey].path == path)
+                if (MapContainer<NestedData> *resultChildMap = dynamic_cast<MapContainer<NestedData> *>(node.children.get()))
                 {
-                    result = node.children[targetKey].value;
-                    return true;
+                    if (resultChildMap->contain(targetKey))
+                        if (!(*resultChildMap)[targetKey].value.empty())
+                            if ( (*resultChildMap)[targetKey].path == path)
+                                {
+                                    result = (*resultChildMap)[targetKey].value;
+                                    return true;
+                                }
+
+                    for (auto it = resultChildMap->begin(); it != resultChildMap->end(); it++)
+                    {
+                        if (recurse(it->second))
+                            return true;
+                    }
                 }
-                for (const auto &child : node.children)
+                else if (ListContainer<NestedData> *resultChildList = dynamic_cast<ListContainer<NestedData> *>(node.children.get()))
                 {
-                    if (recurse(child))
-                        return true;
+                    for (auto it = resultChildList->begin(); it != resultChildList->end(); it++)
+                    {
+                        if (recurse(*it))
+                            return true;
+                    }
                 }
+
                 return false;
             };
 
