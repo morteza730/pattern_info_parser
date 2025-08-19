@@ -9,6 +9,9 @@ add_library(${LIBRARY_TARGET_NAME} SHARED
     ${CMAKE_CURRENT_LIST_DIR}/include/nestedData.hpp
     # ${CMAKE_CURRENT_LIST_DIR}/include/requestInfo.hpp
     ${CMAKE_CURRENT_LIST_DIR}/include/structInfo.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/dataExtractor.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/iContainer.hpp
+
 )
 
 target_sources(${LIBRARY_TARGET_NAME} PRIVATE

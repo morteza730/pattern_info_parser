@@ -9,19 +9,20 @@
 #include <string>
 
 namespace par
-{    
+{
 bool tag_match_json(const Tag &tag, NestedData   &result,  const QJsonObject &jsonObject, std::string path);
-    
+
+template <typename TNestedData>
 class SimpleJSONUnpack: public IInterpreter
 {
-    using TagMatchFunc = std::function<bool(const Tag&,NestedData &,const QJsonObject&,std::string)>;
+    using TagMatchFunc = std::function<bool(const Tag&,TNestedData &,const QJsonObject&,std::string)>;
 
 public:
     SimpleJSONUnpack(const Pattern &p, TagMatchFunc func)
         : p{p}, matcherFunc{func}
     {}
 
-    virtual bool unpack(const std::string& package, NestedData  &result) const override
+    virtual bool unpack(const std::string& package, TNestedData  &result) const override
     {
         if (package.empty())
             return false;
@@ -41,5 +42,6 @@ private:
     Pattern p;
     TagMatchFunc matcherFunc;
 };
+
 
 }

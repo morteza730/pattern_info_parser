@@ -6,15 +6,16 @@
 #include <functional>
 #include <iostream>
 
+#include "dataExtractor.hpp"
+
 namespace par
 {
-// TODO: a factory for making structInfo.
+
 template <typename TAttribute>
 struct StructInfo: public IStructInfo
 {
     StructInfo(const std::string &path, std::unordered_map<TAttribute, std::string> attributeNames): path{path}, attributeNames{attributeNames}{}
 
-    // TODO: fill function violate single responsibility and open close principles.
     void fill(const NestedData &data) override
     {
         for (auto it = attributeNames.cbegin(); it != attributeNames.cend(); ++it)
@@ -22,38 +23,11 @@ struct StructInfo: public IStructInfo
             const std::string &targetKey = it->second;
             std::string result;
 
-            std::function<bool(const NestedData &)> recurse =
-                [&](const NestedData &node) -> bool
-            {
-                if (MapContainer<NestedData> *resultChildMap = dynamic_cast<MapContainer<NestedData> *>(node.children.get()))
-                {
-                    if (resultChildMap->contain(targetKey))
-                        if (!(*resultChildMap)[targetKey].value.empty())
-                            if ( (*resultChildMap)[targetKey].path == path)
-                                {
-                                    result = (*resultChildMap)[targetKey].value;
-                                    return true;
-                                }
+            bool existed = extract<NestedData>(targetKey,data,[this](const NestedData &node){
+                    return !node.value.empty() && node.path == this->path;
+                },result);
 
-                    for (auto it = resultChildMap->begin(); it != resultChildMap->end(); it++)
-                    {
-                        if (recurse(it->second))
-                            return true;
-                    }
-                }
-                else if (ListContainer<NestedData> *resultChildList = dynamic_cast<ListContainer<NestedData> *>(node.children.get()))
-                {
-                    for (auto it = resultChildList->begin(); it != resultChildList->end(); it++)
-                    {
-                        if (recurse(*it))
-                            return true;
-                    }
-                }
-
-                return false;
-            };
-
-            if (recurse(data))
+            if (existed)
             {
                 attributeValues.emplace(it->first,result);
             }

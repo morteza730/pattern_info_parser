@@ -11,16 +11,17 @@ namespace par
 {
 bool tag_match_xml(const Tag &tag, NestedData   &result,  const QDomElement &element, std::string path);
 
+template <typename TNestedData>
 class SimpleXMLUnpack: public IInterpreter
 {
-    using TagMatchFunc = std::function<bool(const Tag&,NestedData &,const QDomElement&, std::string)>;
+    using TagMatchFunc = std::function<bool(const Tag&,TNestedData &,const QDomElement&, std::string)>;
 
 public:
     SimpleXMLUnpack(const Pattern &p, TagMatchFunc func)
         : p{p}, matcherFunc{func}
     {}
 
-    virtual bool unpack(const std::string& package, NestedData  &result) const override
+    virtual bool unpack(const std::string& package, TNestedData  &result) const override
     {
         if (package.empty())
             return false;
