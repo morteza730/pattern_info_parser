@@ -10,7 +10,7 @@ target_include_directories(${APPLICATION_TARGET_NAME}
 target_link_libraries(${APPLICATION_TARGET_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Xml
-    ${LIBRARY_TARGET_NAME}
+    ${PARSER_TARGET_NAME}
 )
 
 set_target_properties(${APPLICATION_TARGET_NAME} PROPERTIES
