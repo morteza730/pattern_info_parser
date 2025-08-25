@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <map>
 #include <vector>
+#include <type_traits>
 
 struct IContainer
 {
@@ -49,4 +50,27 @@ struct ListContainer : public IContainer
     std::size_t size() const { return items.size(); }
     void resize(int n) { items.resize(n); }
     TNestedData &at(int index) { return items.at(index); }
+};
+
+template <typename TNestedData>
+struct LabelContainer : public IContainer
+{
+    static_assert(std::is_default_constructible_v<TNestedData>, "TNestedData must be default constructible");
+
+    template <typename T, typename = void>
+    struct has_equal_operator : std::false_type
+    {
+    };
+
+    template <typename T>
+    struct has_equal_operator<T, std::void_t<decltype(std::declval<T>() == std::declval<T>())>>
+        : std::true_type
+    {
+    };
+
+    static_assert(has_equal_operator<TNestedData>::value, "TNestedData should support ==");
+
+    TNestedData item;
+
+    bool isEqual(const TNestedData &data) { return item == data; }
 };

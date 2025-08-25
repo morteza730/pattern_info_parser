@@ -197,20 +197,20 @@ int main(int argc, char *argv[])
     Pattern terminalCardPattern
         {"Parent",false,
             {
-                Pattern{"IsSuccess"},
-                Pattern{"ErrorMessage"},
+                Label{"IsSuccess"},
+                Label{"ErrorMessage"},
                 Pattern{"Data",false,
                     {
                     Pattern{"Details",true,
                         {
-                            Pattern{"0",true,
+                            List{true,
                                 {
-                                   Pattern{"Name"},
-                                   Pattern{"Price"},
-                                   Pattern{"Description"},
-                                   Pattern{"TypeName"},
-                                   Pattern{"Code"},
-                                   Pattern{"TerminalCardID"}
+                                   Label{"Name"},
+                                   Label{"Price"},
+                                   Label{"Description"},
+                                   Label{"TypeName"},
+                                   Label{"Code"},
+                                   Label{"TerminalCardID"}
                                 }
                             }
                         }

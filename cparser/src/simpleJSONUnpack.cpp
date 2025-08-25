@@ -9,10 +9,16 @@ bool is_integer(const std::string &s)
     return std::regex_match(s, std::regex("^[-+]?\\d+$"));
 }
 
-bool tag_match_json_vector(const std::vector<Tag> &tags, NestedData &result, const QJsonArray &jsonArray, std::string path);
+bool tag_match_json_label(const std::vector<Tag> &tags, NestedData &result, const QJsonArray &jsonArray, std::string path);
+bool tag_match_json_list(const std::vector<Tag> &tags, NestedData &result, const QJsonArray &jsonArray, std::string path);
 bool tag_match_json_map(const par::Tag &tag, par::NestedData &result, const QJsonObject &jsonObject, std::string path);
 
-bool tag_match_json_vector(const std::vector<Tag> &tags, NestedData &result, const QJsonArray &jsonArray, std::string path)
+bool tag_match_json_label(const par::Tag &tag, NestedData &result, const QJsonArray &jsonArray, std::string path)
+{
+    return false;
+}
+
+bool tag_match_json_list(const std::vector<Tag> &tags, NestedData &result, const QJsonArray &jsonArray, std::string path)
 {
     auto *resultChildList = dynamic_cast<ListContainer<NestedData> *>(result.children.get());
     assert(resultChildList && "result.children must be a MapContainer<NestedData>");
@@ -53,7 +59,7 @@ bool tag_match_json_vector(const std::vector<Tag> &tags, NestedData &result, con
             if (!resultElement.children)
                 resultElement.children = std::make_unique<ListContainer<NestedData>>();
 
-            if (tag_match_json_vector(tagElement.children, resultElement, jsonElementValue.toArray(), path))
+            if (tag_match_json_list(tagElement.children, resultElement, jsonElementValue.toArray(), path))
                 continue;
             else
                 return false;
@@ -100,7 +106,7 @@ bool tag_match_json_map(const par::Tag &tag, par::NestedData &result, const QJso
                 resultElement.children = std::make_unique<ListContainer<NestedData>>();
 
             path += '/' + tagChild.name;
-            if (tag_match_json_vector(tagChild.children, resultElement, jsonChildValue.toArray(), path))
+            if (tag_match_json_list(tagChild.children, resultElement, jsonChildValue.toArray(), path))
                 continue;
             else
                 return false;
@@ -111,8 +117,26 @@ bool tag_match_json_map(const par::Tag &tag, par::NestedData &result, const QJso
 
 bool par::tag_match_json(const Tag &tag, NestedData &result, const QJsonObject &jsonObject, std::string path)
 {
-    if (!result.children)
-        result.children = std::make_unique<MapContainer<NestedData>>();
+    if (tag.type == Tag::Type::PATTERN) 
+    {
+        if (!result.children)
+            result.children = std::make_unique<MapContainer<NestedData>>();
 
-    return tag_match_json_map(tag, result, jsonObject, path);
+        return tag_match_json_map(tag, result, jsonObject, path);
+    }
+    else if (tag.type == Tag::Type::LIST)
+    {
+        if (!result.children)
+            result.children = std::make_unique<ListContainer<NestedData>>();
+
+        return tag_match_json_list(tag, result, jsonObject, path);
+    }
+    else if (tag.type == Tag::Type::LABEL)
+    {
+        if (!result.children)
+            result.children = std::make_unique<MapContainer<NestedData>>();
+
+        return tag_match_json_label(tag, result, jsonObject, path);
+
+    }
 }

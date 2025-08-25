@@ -15,7 +15,7 @@ public:
     bool optional;
     std::vector<Tag> children;
 
-    friend std::ostream& operator<<(std::ostream& os, const Tag& tag)
+    friend std::ostream &operator<<(std::ostream &os, const Tag &tag)
     {
         os << "<" << tag.name;
 
@@ -25,7 +25,7 @@ public:
         {
             os << ">" << std::endl;
 
-            for (const auto &child: tag.children)
+            for (const auto &child : tag.children)
                 os << child;
 
             os << "</" << tag.name << ">" << std::endl;
@@ -33,22 +33,40 @@ public:
         return os;
     }
 
-protected:
-    Tag(const std::string &name, bool optional)
-        : name{name},optional{optional}{}
+    enum class Type
+    {
+        LABEL,
+        LIST,
+        PATTERN
+    } type;
 
-    Tag(const std::string &name, bool optional, const std::vector<Tag> &children)
-        : name{name},optional{optional},children{children} {}
+protected:
+    Tag(Type type, const std::string &name, bool optional)
+        : type{type}, name{name}, optional{optional} {}
+
+    Tag(Type type, const std::string &name, bool optional, const std::vector<Tag> &children)
+        : type{type}, name{name}, optional{optional}, children{children} {}
 };
 
-class Pattern: public Tag
+class Pattern : public Tag
 {
 public:
-    explicit Pattern(const std::string &name, bool optional=false)
-        : Tag{name,optional}{}
+    explicit Pattern(const std::string &name, bool optional, std::initializer_list<Tag> children)
+        : Tag(Tag::Type::PATTERN, name, optional, children) {}
+};
 
-    Pattern(const std::string &name, bool optional,std::initializer_list<Tag> children)
-        : Tag(name,optional,children){}
+class Label : public Tag
+{
+public:
+    explicit Label(const std::string &name, bool optional = false)
+        : Tag{Tag::Type::LABEL, name, optional} {}
+};
+
+class List : public Tag
+{
+public:
+    explicit List(bool optional, std::initializer_list<Tag> children)
+        : Tag{Tag::Type::LIST, "",optional, children} {}
 };
 
 }
