@@ -6,7 +6,7 @@
 #include "nestedData.hpp"
 
 
-std::unique_ptr<par::IParser> par::create_parser(par::Pattern* p, InterpretType type)
+std::unique_ptr<par::IParser> par::create_parser(par::Tag* p, InterpretType type)
 {
     if (!p) return std::unique_ptr<par::IParser>();
 

@@ -195,29 +195,24 @@ int main(int argc, char *argv[])
 
 
     Pattern terminalCardPattern
-        {"Parent",false,
-            {
-                Label{"IsSuccess"},
-                Label{"ErrorMessage"},
-                Pattern{"Data",false,
+        {
+            Label{"IsSuccess"},
+            Label{"ErrorMessage"},
+            Map{"Data",false,
+                {
+                List{"Details",true,
                     {
-                    Pattern{"Details",true,
-                        {
-                            List{true,
-                                {
-                                   Label{"Name"},
-                                   Label{"Price"},
-                                   Label{"Description"},
-                                   Label{"TypeName"},
-                                   Label{"Code"},
-                                   Label{"TerminalCardID"}
-                                }
-                            }
-                        }
+                        Label{"Name"},
+                        Label{"Price"},
+                        Label{"Description"},
+                        Label{"TypeName"},
+                        Label{"Code"},
+                        Label{"TerminalCardID"}
                     }
                 }
             }
         }
+
     };
 
 
@@ -248,7 +243,7 @@ int main(int argc, char *argv[])
       {VasMenuAttribute::Counter, "Counter"}
     };
 
-    StructInfo<VasMenuAttribute> structInfo{"./Parent/Data/Details/0",attributeNames};
+    StructInfo<VasMenuAttribute> structInfo{"./Parent/Data/Details",attributeNames};
 
 
     std::unique_ptr<par::IParser> parser_json = par::create_parser(&terminalCardPattern, InterpretType::JSON);

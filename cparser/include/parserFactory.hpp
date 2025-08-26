@@ -13,6 +13,6 @@ enum class InterpretType
     JSON
 };
 
-class Pattern;
-std::unique_ptr<IParser> create_parser(Pattern *p, InterpretType type);
+class Tag;
+std::unique_ptr<IParser> create_parser(Tag *p, InterpretType type);
 }

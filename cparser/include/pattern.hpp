@@ -37,6 +37,7 @@ public:
     {
         LABEL,
         LIST,
+        MAP,
         PATTERN
     } type;
 
@@ -48,11 +49,11 @@ protected:
         : type{type}, name{name}, optional{optional}, children{children} {}
 };
 
-class Pattern : public Tag
+class Map : public Tag
 {
 public:
-    explicit Pattern(const std::string &name, bool optional, std::initializer_list<Tag> children)
-        : Tag(Tag::Type::PATTERN, name, optional, children) {}
+    explicit Map(const std::string &name, bool optional, std::initializer_list<Tag> children)
+        : Tag(Tag::Type::MAP, name, optional, children) {}
 };
 
 class Label : public Tag
@@ -65,8 +66,15 @@ public:
 class List : public Tag
 {
 public:
-    explicit List(bool optional, std::initializer_list<Tag> children)
-        : Tag{Tag::Type::LIST, "",optional, children} {}
+    explicit List(const std::string &name, bool optional, std::initializer_list<Tag> children)
+        : Tag{Tag::Type::LIST, name, optional, children} {}
 };
 
+template <typename ...Args>
+class Pattern: public Tag
+{
+public:
+    explicit Pattern(Args&& ...args)
+        : Tag{Tag::Type::PATTERN, "", false, std::vector<Tag>{std::forward<Args>(args)...}} {}
+};
 }

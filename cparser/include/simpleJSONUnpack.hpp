@@ -18,7 +18,7 @@ class SimpleJSONUnpack: public IInterpreter
     using TagMatchFunc = std::function<bool(const Tag&,TNestedData &,const QJsonObject&,std::string)>;
 
 public:
-    SimpleJSONUnpack(const Pattern &p, TagMatchFunc func)
+    SimpleJSONUnpack(const Tag &p, TagMatchFunc func)
         : p{p}, matcherFunc{func}
     {}
 
@@ -35,11 +35,11 @@ public:
         return matcherFunc(p,result,jsonObject,".");
     }
 
-    const Pattern &get_pattern() const {return p;}
+    const Tag &get_pattern() const {return p;}
     const TagMatchFunc &get_matcher() const {return matcherFunc;}
 
 private:
-    Pattern p;
+    Tag p;
     TagMatchFunc matcherFunc;
 };
 

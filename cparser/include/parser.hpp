@@ -7,12 +7,12 @@
 namespace par
 {
 enum class InterpretType;
-class Pattern;
+class Tag;
 
 template <typename T>
 class Parser: public IParser,public T
 {
-    friend std::unique_ptr<IParser> create_parser(Pattern* p, InterpretType type);
+    friend std::unique_ptr<IParser> create_parser(Tag* p, InterpretType type);
 
 public:
     static_assert(std::is_base_of<IInterpreter,T>::value,

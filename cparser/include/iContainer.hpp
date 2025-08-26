@@ -49,6 +49,7 @@ struct ListContainer : public IContainer
     bool contain(const TNestedData &data) { return std::find(items.begin(), items.end(), data) != items.end(); }
     std::size_t size() const { return items.size(); }
     void resize(int n) { items.resize(n); }
+    TNestedData &operator[](int index) { return items.at(index);}
     TNestedData &at(int index) { return items.at(index); }
 };
 
@@ -73,4 +74,5 @@ struct LabelContainer : public IContainer
     TNestedData item;
 
     bool isEqual(const TNestedData &data) { return item == data; }
+    virtual std::size_t count() override final { return 1; }
 };
