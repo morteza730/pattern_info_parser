@@ -1,8 +1,5 @@
 #include <iostream>
 #include "parserFactory.hpp"
-//#include "transactionInfo.hpp"
-// #include "requestInfo.hpp"
-//#include "vasMenuInfo.hpp"
 #include "structInfo.hpp"
 
 using namespace par;
@@ -65,134 +62,6 @@ int main(int argc, char *argv[])
     }
     )json";
 
-    std::string salamatJSON = R"json(
-    {
-    "IsSuccess": true,
-        "ErrorMessage": "",
-        "Data":{
-            "TerminalCardID": 100009,
-            "ServiceTypeId": 12,
-            "Title": "emam hossein hospital",
-            "PAN": "1",
-            "TerminalID": "212857",
-            "MerchantID": "21061182",
-            "MerchantName": "emam hossein",
-            "Description": "user=Cashless_3;password=123;url=http://192.168.1.114:8080/samensalamat/api/cashier",
-            "IsTwoReceipts": false,
-            "IsStraightToVAsMenu": true,
-            "TitleEN": "SamenSalamatHis",
-            "ServiceType": {
-                "Id": 12,
-                "Title": "HOSPITAL_S",
-                "Description": "بیمارستان ثامن سلامت"
-            },
-            "Details": [
-                {
-                "TerminalCardID": 100009,
-                "Name": "بارکد",
-                "Price": 0,
-                "Description": "BARCODE",
-                "TypeName": "BARCODE",
-                "Code": "000013000570"
-                },
-                {
-                "TerminalCardID": 100009,
-                "Name": "کلینیک",
-                "Price": 1,
-                "Description": "CLINIC",
-                "TypeName": "بیمارستان امام حسین کرمانشاه",
-                "Code": "000013000571"
-                },
-                {
-                "TerminalCardID": 100009,
-                "Name": "دندانپزشکی",
-                "Price": 2,
-                "Description": "DENTIST",
-                "TypeName": "بیمارستان امام حسین کرمانشاه",
-                "Code": "000013000572"
-                },
-                {
-                "TerminalCardID": 100009,
-                "Name": "فیزیوتراپی",
-                "Price": 3,
-                "Description": "PHYSIOTRAPY",
-                "TypeName": "بیمارستان امام حسین کرمانشاه",
-                "Code": "000013000573"
-                },
-                {
-                "TerminalCardID": 100009,
-                "Name": "رادیولوژی",
-                "Price": 4,
-                "Description": "RADIOLOGY",
-                "TypeName": "بیمارستان امام حسین کرمانشاه",
-                "Code": "000013000574"
-                },
-                {
-                "TerminalCardID": 100009,
-                "Name": "آندوسکپی",
-                "Price": 5,
-                "Description": "ENDOSCOPY",
-                "TypeName": "بیمارستان امام حسین کرمانشاه",
-                "Code": "000013000575"
-                },
-                {
-                "TerminalCardID": 100009,
-                "Name": "بستری",
-                "Price": 6,
-                "Description": "ADMISSION",
-                "TypeName": "بیمارستان امام حسین کرمانشاه",
-                "Code": "000013000576"
-                },
-                {
-                "TerminalCardID": 100009,
-                "Name": "داروخانه",
-                "Price": 7,
-                "Description": "PHARMACY",
-                "TypeName": "بیمارستان امام حسین کرمانشاه",
-                "Code": "000013000577"
-                },
-                {
-                "TerminalCardID": 100009,
-                "Name": "آزمایشگاه",
-                "Price": 8,
-                "Description": "LABRATORY",
-                "TypeName": "بیمارستان امام حسین کرمانشاه",
-                "Code": "000013000578"
-                },
-                {
-                "TerminalCardID": 100009,
-                "Name": "پاتولوژی",
-                "Price": 9,
-                "Description": "PATHOLOGY",
-                "TypeName": "بیمارستان امام حسین کرمانشاه",
-                "Code": "000013000579"
-                },
-                {
-                "TerminalCardID": 100009,
-                "Name": "تغذیه",
-                "Price": 10,
-                "Description": "FEEDING",
-                "TypeName": "بیمارستان امام حسین کرمانشاه",
-                "Code": "000013000580"
-                },
-                {
-                "TerminalCardID": 100009,
-                "Name": "متفرقه",
-                "Price": 11,
-                "Description": "MISC",
-                "TypeName": "بیمارستان امام حسین کرمانشاه",
-                "Code": "000013000581"
-                }
-            ],
-            "RegionID": 1571,
-            "WebServiceUrl": null,
-            "EnTerminalGroupTitle": "Hospital Payment",
-            "FaTerminalGroupTitle": "پرداخت بیمارستان",
-            "TerminalGroupDescription": "STVM=1"
-            }
-        }
-    )json";
-
 
     Pattern terminalCardPattern
         {
@@ -200,14 +69,17 @@ int main(int argc, char *argv[])
             Label{"ErrorMessage"},
             Map{"Data",false,
                 {
-                List{"Details",true,
+                    Iterator{"Details",
                     {
-                        Label{"Name"},
-                        Label{"Price"},
-                        Label{"Description"},
-                        Label{"TypeName"},
-                        Label{"Code"},
-                        Label{"TerminalCardID"}
+                        List
+                        {
+                            Label{"Name"},
+                            Label{"Price"},
+                            Label{"Description"},
+                            Label{"TypeName"},
+                            Label{"Code"},
+                            Label{"TerminalCardID"}
+                        }
                     }
                 }
             }
@@ -215,10 +87,6 @@ int main(int argc, char *argv[])
 
     };
 
-
-//    TransactionInfo trxInfo{"./Parent/Data"};
-//    VasMenuInfo vasInfo{"./Parent/Data/Details/TerminalCardDetail"};
-    // RequestInfo info{"./Parent", {"IsSuccess"}};
 
     enum class VasMenuAttribute {
         MenuId,
@@ -228,8 +96,7 @@ int main(int argc, char *argv[])
         TypeName,
         Code,
         ID,
-        Counter,
-        COUNT // Keep last for iteration
+        Counter
     };
 
     const std::unordered_map<VasMenuAttribute, std::string> attributeNames = {
@@ -243,8 +110,7 @@ int main(int argc, char *argv[])
       {VasMenuAttribute::Counter, "Counter"}
     };
 
-    StructInfo<VasMenuAttribute> structInfo{"./Parent/Data/Details",attributeNames};
-
+    StructInfo<VasMenuAttribute> structInfo{"./Data/Details/0",attributeNames};
 
     std::unique_ptr<par::IParser> parser_json = par::create_parser(&terminalCardPattern, InterpretType::JSON);
     parser_json->parse({structInfo},sampleJSON);

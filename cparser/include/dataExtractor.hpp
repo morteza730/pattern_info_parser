@@ -6,34 +6,32 @@
 
 namespace par
 {
-template <typename TNestedData>
-bool extract(const std::string &targetKey,
-          const TNestedData &data,
-          const std::function<bool(const TNestedData &)> &predicate,
-          std::string &result)
-{
-    std::function<bool(const TNestedData &)> recurse =
-        [&](const TNestedData &node) -> bool
-    {
-        if (MapContainer<TNestedData> *resultChildMap = dynamic_cast<MapContainer<TNestedData> *>(node.children.get()))
-        {
-            if (resultChildMap->contain(targetKey))
-            {
-                TNestedData &targetNode = (*resultChildMap)[targetKey];
-                if (predicate(targetNode))
-                {
-                    result = (*resultChildMap)[targetKey].value;
-                    return true;
-                }
-            }
 
+template <typename TData>
+bool extract(const TData &data,
+             const std::function<bool(const TData &)> &predicate,
+             std::string &result)
+{
+    std::function<bool(const TData &)> recurse =
+        [&](const TData &node) -> bool
+    {
+        if ( predicate(node))
+        {
+            // FIXME: instead of getting value member data, the node itself should copy and returned.
+            // But due to NestedData uncopyable nature, it is a hard task.
+            result = node.value;
+            return true;
+        }
+
+        if (MapContainer<TData> *resultChildMap = dynamic_cast<MapContainer<TData> *>(node.children.get()))
+        {
             for (auto it = resultChildMap->begin(); it != resultChildMap->end(); it++)
             {
                 if (recurse(it->second))
                     return true;
             }
         }
-        else if (ListContainer<TNestedData> *resultChildList = dynamic_cast<ListContainer<TNestedData> *>(node.children.get()))
+        else if (ListContainer<TData> *resultChildList = dynamic_cast<ListContainer<TData> *>(node.children.get()))
         {
             for (auto it = resultChildList->begin(); it != resultChildList->end(); it++)
             {

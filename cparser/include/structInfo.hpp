@@ -23,12 +23,11 @@ struct StructInfo: public IStructInfo
             const std::string &targetKey = it->second;
             std::string result;
 
-            bool existed = extract<NestedData>(targetKey,data,[this](const NestedData &node){
-                    return !node.value.empty() && node.path == this->path;
-                },result);
+            bool existed = extract<NestedData>(data,[this,targetKey](const NestedData &node) {
+                return node.tag == targetKey && !node.value.empty() && node.path == this->path;
+            },result);
 
-            if (existed)
-            {
+            if (existed) {
                 attributeValues.emplace(it->first,result);
             }
         }

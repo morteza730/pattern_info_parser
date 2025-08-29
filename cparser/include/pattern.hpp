@@ -38,7 +38,8 @@ public:
         LABEL,
         LIST,
         MAP,
-        PATTERN
+        PATTERN,
+        ITERATOR
     } type;
 
 protected:
@@ -63,11 +64,19 @@ public:
         : Tag{Tag::Type::LABEL, name, optional} {}
 };
 
+template <typename ...Args>
 class List : public Tag
 {
 public:
-    explicit List(const std::string &name, bool optional, std::initializer_list<Tag> children)
-        : Tag{Tag::Type::LIST, name, optional, children} {}
+    explicit List(Args&& ...args)
+        : Tag{Tag::Type::LIST, "", true, std::vector<Tag>{std::forward<Args>(args)...}} {}
+};
+
+class Iterator: public Tag
+{
+public:
+    explicit Iterator(const std::string &name, std::initializer_list<Tag> children)
+        : Tag{Tag::Type::ITERATOR, name, false, children} {}
 };
 
 template <typename ...Args>
