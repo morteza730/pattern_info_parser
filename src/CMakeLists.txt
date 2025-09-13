@@ -1,12 +1,12 @@
 set(CMAKE_AUTOMOC ON)
 
 file(GLOB HEAD_FILES
-    ${LIBPARSER_PROJECT_DIR}/include/parser/*.hpp
+    ${LIBPARSER_PROJECT_DIR}/include/patternParser/*.hpp
 )
 
 file(GLOB SRC_FILES
-    ${LIBPARSER_PROJECT_DIR}/src/parser/*.hpp
-    ${LIBPARSER_PROJECT_DIR}/src/parser/*.cpp
+    ${LIBPARSER_PROJECT_DIR}/src/patternParser/*.hpp
+    ${LIBPARSER_PROJECT_DIR}/src/patternParser/*.cpp
 )
 
 add_library(${PARSER_TARGET_NAME} SHARED ${HEAD_FILES})
@@ -33,5 +33,5 @@ target_include_directories(${PARSER_TARGET_NAME}
 
 target_include_directories(${PARSER_TARGET_NAME}
     PRIVATE
-        ${LIBPARSER_PROJECT_DIR}/include/parser
+        ${LIBPARSER_PROJECT_DIR}/include/patternParser
 )

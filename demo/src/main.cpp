@@ -1,6 +1,6 @@
 #include <iostream>
-#include "parser/parserFactory.hpp"
-#include "parser/structInfo.hpp"
+#include "patternParser/parserFactory.hpp"
+#include "patternParser/structInfo.hpp"
 
 using namespace par;
 
